@@ -59,3 +59,52 @@ class BigMonster extends Character {
         this.maxLife = this.life;
     }
 }
+
+class Stage {
+    constructor(figther1, figther2, figther1El, figther2El) {
+        this.figther1 = figther1;
+        this.figther2 = figther2;
+        this.figther1El = figther1El;
+        this.figther2El = figther2El;
+    }
+
+    start() {
+        this.update();
+        
+        this.figther1El.querySelector('.attackButton').addEventListener('click', () => this.doAttack(this.figther1, this.figther2));
+        this.figther2El.querySelector('.attackButton').addEventListener('click', () => this.doAttack(this.figther2, this.figther1));
+    }
+
+    update() {
+        // Fighter 1
+        this.figther1El.querySelector('.name').innerHTML = `${this.figther1.name} - ${this.figther1.life.toFixed(1)} HP`;
+        let f1Pct = (this.figther1.life / this.figther1.maxLife) * 100;
+        this.figther1El.querySelector('.bar').style.width = `${f1Pct}%`;
+        // Fighter 2
+        this.figther2El.querySelector('.name').innerHTML = `${this.figther2.name} - ${this.figther2.life.toFixed(1)} HP`;
+        let f2Pct = (this.figther2.life / this.figther2.maxLife) * 100;
+        this.figther2El.querySelector('.bar').style.width = `${f2Pct}%`;
+    }
+
+    doAttack(attacking, attacked) {
+        if(attacking.life <= 0 || attacked.life <= 0) {
+            console.log('Atacando cachorro morto');
+            return
+        }
+
+        let attackFactor = (Math.random(2) * 2).toFixed(2);
+        let defenseFactor = (Math.random(2) * 2).toFixed(2);
+
+        let actualAttack = attacking.attack * attackFactor;
+        let actualDefense = attacked.defense * defenseFactor;
+
+        if(actualAttack > actualDefense) {
+            attacked.life -= actualAttack;
+            console.log(`${attacking.name} causou ${actualAttack} de dano em ${attacked.name}`);
+        } else {
+            console.log(`${attacked.name} conseguiu defender...`);
+        }
+
+        this.update();
+    }
+}
