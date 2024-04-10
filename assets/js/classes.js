@@ -1,4 +1,4 @@
-// Knight or Mage - Guerreiro ou Mage
+// Knight, Mage or Rogue - Guerreiro ou Mage
 // LittleMonster ou BigMonster
 class Character {
 
@@ -40,6 +40,16 @@ class Mage extends Character {
     }
 }
 
+class Rogue extends Character {
+    constructor(name) {
+        super(name);
+        this.life = 60;
+        this.attack = 18;
+        this.defense = 7;
+        this.maxLife = this.life;
+    }
+}
+
 class LittleMonster extends Character {
     constructor() {
         super('LittleMonster');
@@ -61,11 +71,12 @@ class BigMonster extends Character {
 }
 
 class Stage {
-    constructor(figther1, figther2, figther1El, figther2El) {
+    constructor(figther1, figther2, figther1El, figther2El, logObject) {
         this.figther1 = figther1;
         this.figther2 = figther2;
         this.figther1El = figther1El;
         this.figther2El = figther2El;
+        this.log = logObject;
     }
 
     start() {
@@ -88,7 +99,7 @@ class Stage {
 
     doAttack(attacking, attacked) {
         if(attacking.life <= 0 || attacked.life <= 0) {
-            console.log('Atacando cachorro morto');
+            this.log.addMessage('Atacando cachorro morto');
             return
         }
 
@@ -100,11 +111,32 @@ class Stage {
 
         if(actualAttack > actualDefense) {
             attacked.life -= actualAttack;
-            console.log(`${attacking.name} causou ${actualAttack} de dano em ${attacked.name}`);
+            this.log.addMessage(`${attacking.name} causou ${actualAttack} de dano em ${attacked.name}`);
         } else {
-            console.log(`${attacked.name} conseguiu defender...`);
+            this.log.addMessage(`${attacked.name} conseguiu defender...`);
         }
 
         this.update();
+    }
+}
+
+class Log {
+    list = [];
+
+    constructor(listEl) {
+        this.listEl = listEl;
+    }
+
+    addMessage(msg) {
+        this.list.push(msg);
+        this.render();
+    }
+
+    render() {
+        this.listEl.innerHTML = '';
+
+        for(let i in this.list) {
+            this.listEl.innerHTML += `<li>${this.list[i]}</li>`;
+        }
     }
 }
